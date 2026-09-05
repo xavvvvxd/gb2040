@@ -5,7 +5,7 @@ namespace GB2040::Core
 {
 
 Timer::Timer(Console& console)
-: console(console), timaOverflow(false) {  }
+: console(console) {  }
     
 void Timer::incTimers(size_t cycles) {
     sysCounter += cycles;

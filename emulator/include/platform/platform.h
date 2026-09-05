@@ -42,13 +42,13 @@ public:
     virtual RAMSource* getSave(size_t) = 0;
     virtual void saveData(RAMSource*) = 0;
 protected:
-    GB2040::Core::Framebuffer fbA;
-    GB2040::Core::Framebuffer fbB;
+    GB2040::Core::Framebuffer fbA{};
+    GB2040::Core::Framebuffer fbB{};
 
     GB2040::Core::Framebuffer* front;
     GB2040::Core::Framebuffer* back;
 
-    Platform() : fbA(GB_WIDTH, GB_HEIGHT), fbB(GB_WIDTH, GB_HEIGHT), back(&fbA), front(&fbB) {  }
+    Platform() : back(&fbA), front(&fbB) {  }
 };
     
 Platform* createPlatform(void); // platform-specific factory

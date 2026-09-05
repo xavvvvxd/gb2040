@@ -8,8 +8,7 @@ namespace GB2040::Core
 {
 
 MMU::MMU(Console& console)
-: console(console),
-  bootRomMapped(true) {
+: console(console) {
     memset(internalWram, 0, WRAM_SIZE);
     memset(hram, 0, HRAM_SIZE);
 }

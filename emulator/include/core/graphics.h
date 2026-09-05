@@ -13,22 +13,24 @@ typedef uint16_t Colour;
 
 class Framebuffer {
 public:
-    Framebuffer(unsigned int, unsigned int);
+    Colour fb[GB_HEIGHT * GB_WIDTH];
 
-    void clear(void);
+    inline void clear() {
+        Colour white = 0xFFFF;
 
-    void setPixel(unsigned int, unsigned int, Colour);
-    Colour getPixel(unsigned int, unsigned int);
-    Colour* data(void);
-    size_t size(void);
+        std::fill(fb, fb + sizeof(fb), white);
+    }
 
-    unsigned int getWidth(void);
-    unsigned int getHeight(void);
-private:
-    unsigned int w;
-    unsigned int h;
+    inline void setPixel(unsigned int x, unsigned int y, Colour colour) {
+        fb[y * GB_WIDTH + x] = colour;
+    }
 
-    std::vector<Colour> fb;
+    inline Colour getPixel(unsigned int x, unsigned int y) {
+        return fb[y * GB_WIDTH + x];
+    }
+
+    inline Colour* data() { return fb; }
+    inline size_t size() { return GB_WIDTH * GB_HEIGHT; }
 };
 
 } // namespace GB2040::Core

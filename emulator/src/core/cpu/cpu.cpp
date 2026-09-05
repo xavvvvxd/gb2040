@@ -9,7 +9,7 @@ namespace GB2040::Core
 {
 
 CPU::CPU(Console& console) 
-: console(console), SP(0xFFFE), PC(0), ime(false), ie(0), halted(false), stopped(false) {
+: console(console) {
     // init
     
     initInstrTable();
@@ -650,6 +650,9 @@ bool CPU::checkInterrupts(void) {
     if (!ime) return false;
 
     uint8_t pending = intFlag & ie;
+
+    if (!pending) return false;
+
     uint8_t vectors[5] = { 0x40, 0x48, 0x50, 0x58, 0x60 }; // VBLANK, STAT, timer, serial and joypad
     for (int i = 0; i < 5; i++) {
         if ((pending >> i) & 1) {

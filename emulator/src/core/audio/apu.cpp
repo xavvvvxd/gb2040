@@ -11,14 +11,7 @@ namespace GB2040::Core
 {
 
 APU::APU(Console& console) : 
-console(console), 
-divApu(0), 
-divApuTimer(8192), 
-sampleTimer(SAMPLE_FREQ),
-lVolume(7),
-rVolume(7),
-pan(0),
-enabled(false) {
+console(console) {
     setEnabled(false);
 };
 

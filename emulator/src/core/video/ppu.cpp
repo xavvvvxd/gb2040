@@ -10,10 +10,7 @@ namespace GB2040::Core
 {
 
 PPU::PPU(Console& console)
-: console(console), framebuffer(console.platform->getBackBuffer()),
-mode(PPUMode::HBLANK), modeClock(0),
-prevHBlank(false), prevVBlank(false), prevOam(false), prevLyc(false),
-scx(0), scy(0) {
+: console(console), framebuffer(console.platform->getBackBuffer()) {
     // initialise VRAM
     memset(vram, 0, VRAM_SIZE);
     memset(oam, 0, OAM_SIZE);
@@ -99,11 +96,11 @@ void PPU::oamScan(void) {
         modeClock -= 80;
 
         for (int i = 0; i < 160; i += 4) {
-            sprites[i / 4].y = oam[i];
-            sprites[i / 4].x = oam[i + 1];
-            sprites[i / 4].tileIdx = oam[i + 2];
-            sprites[i / 4].attrs = oam[i + 3];
-            sprites[i / 4].oamIdx = i / 4;
+            sprites[i >> 2].y = oam[i];
+            sprites[i >> 2].x = oam[i + 1];
+            sprites[i >> 2].tileIdx = oam[i + 2];
+            sprites[i >> 2].attrs = oam[i + 3];
+            sprites[i >> 2].oamIdx = i >> 2;
         }
 
         mode = PPUMode::PIXEL_TRANSFER;
@@ -171,11 +168,11 @@ void PPU::renderScanlinePixel(PPULayer layer, uint8_t x) {
         bgY = scy + ly;
     }
 
-    uint8_t tileY = bgY / 8;
-    uint8_t tileX = bgX / 8;
+    uint8_t tileY = bgY >> 3;
+    uint8_t tileX = bgX >> 3;
 
-    uint8_t pixelX = bgX % 8;
-    uint8_t pixelY = bgY % 8;
+    uint8_t pixelX = bgX & 7;
+    uint8_t pixelY = bgY & 7;
 
     uint8_t tileId = vram[mapBase + tileY * 32 + tileX];
 
