@@ -4,6 +4,10 @@ set(CMAKE_C_STANDARD 11)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+if(NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE Release CACHE STRING "" FORCE)
+endif()
+
 option(PICO_BUILD "Build for RP2040/RP2350" OFF)
 
 file(GLOB_RECURSE CORE_SOURCES "src/core/*.cpp")
@@ -23,10 +27,7 @@ if (PICO_BUILD)
     set(toolchainVersion 14_2_Rel1)
     set(picotoolVersion 2.2.0-a4)
 
-    set(PICO_BOARD pico CACHE STRING "Board type")
-
     # Pull in Raspberry Pi Pico SDK (must be before project)
-    set(PICOTOOL_NO_BUILD 1 CACHE INTERNAL "")
     include(pico_sdk_import.cmake)
 endif()
 
@@ -39,13 +40,27 @@ if(PICO_BUILD)
 
     add_executable(gb2040)
 
+    pico_enable_stdio_usb(gb2040 1)
+
+    pico_set_binary_type(gb2040 no_flash)
+
     file(GLOB_RECURSE PIO_SOURCES "src/*.pio")
     pico_generate_pio_header(gb2040 ${PIO_SOURCES})
+
+    file(GLOB_RECURSE PLATFORM_SOURCES "src/platform/pico/*.cpp")
+
+    # setting global LTO results in a clash with the pico sdk for some reason
+    set_source_files_properties(
+        ${SHARED_SOURCES}
+        ${PLATFORM_SOURCES}
+        PROPERTIES
+            COMPILE_OPTIONS "-flto"
+    )
 
     # add rp2040 executable
     target_sources(gb2040 PRIVATE
         ${SHARED_SOURCES}
-        src/platform/pico/platform.cpp
+        ${PLATFORM_SOURCES}
     )
 
     # set up include dirs for pico target
@@ -54,7 +69,20 @@ if(PICO_BUILD)
     )
 
     # pull in pico deps
-    target_link_libraries(gb2040 pico_stdlib hardware_pio)
+    target_link_libraries(gb2040 pico_stdlib hardware_pio hardware_dma hardware_spi)
+
+    target_compile_options(gb2040 PRIVATE
+        -O3
+        -ffast-math
+        -funroll-loops
+
+        $<$<COMPILE_LANGUAGE:CXX>:
+            -fno-exceptions
+            -fno-rtti
+        >
+    )
+
+    target_link_options(gb2040 PRIVATE -flto)
 
     pico_add_extra_outputs(gb2040)
 else()
@@ -77,6 +105,12 @@ else()
     target_link_libraries(gb2040
         PRIVATE
             ${CMAKE_CURRENT_SOURCE_DIR}/libs/SDL3/lib/x64/SDL3.lib
+    )
+
+    target_link_options(gb2040
+        PRIVATE
+            -static-libgcc
+            -static-libstdc++
     )
 
     # copy SDL3.dll next to desktop executable
