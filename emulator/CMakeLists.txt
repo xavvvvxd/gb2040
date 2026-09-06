@@ -107,10 +107,8 @@ else()
             ${CMAKE_CURRENT_SOURCE_DIR}/libs/SDL3/lib/x64/SDL3.lib
     )
 
-    target_link_options(gb2040
-        PRIVATE
-            -static-libgcc
-            -static-libstdc++
+    target_link_options(gb2040 PRIVATE
+        -static
     )
 
     # copy SDL3.dll next to desktop executable

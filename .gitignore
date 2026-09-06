@@ -1,5 +1,6 @@
 emulator/build
-emulator/.vscode
 emulator/roms/*
 emulator/**/cpu.log
 emulator/tests
+
+**/.vscode/
