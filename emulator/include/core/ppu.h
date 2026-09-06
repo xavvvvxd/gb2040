@@ -57,7 +57,7 @@ private:
 
     void renderScanlineLayer(PPULayer);
     void renderScanlineObjects(void);
-    void renderScanlinePixel(PPULayer, uint8_t x);
+    void renderScanlinePixel(PPULayer, uint8_t x, uint16_t rowOffset);
     void sortSprites(Sprite*, size_t);
 
     void hBlank(void);

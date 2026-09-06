@@ -6,9 +6,7 @@
 
 #include <cstdint>
 #include <cstring>
-
-#include <fstream>
-#include <iostream>
+#include <cstdio>
 
 namespace GB2040::Core {
 
@@ -105,7 +103,7 @@ size_t Console::tick(void) {
 }
 
 void Console::requestInterrupt(Interrupt interrupt) {
-    mmu.writeIo(0x0F, mmu.readIo(0x0F) | (1 << static_cast<int>(interrupt)));
+    cpu.intFlag |= (1 << static_cast<int>(interrupt));
 }
 
 void Console::pressButton(Button button) {

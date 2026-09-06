@@ -3,7 +3,7 @@
 
 #include <cstdint>
 
-#include <iostream>
+#include <cstdio>
 
 namespace GB2040::Core
 {
@@ -620,15 +620,6 @@ void CPU::initCbInstrTable(void) {
     cbInstrTable[0xFF] = &CPU::SET_7_A;
 }
 
-void CPU::setFlag(FlagMask flag, bool val) {
-    if (val) AF.lo |= 1 << flag;
-    else AF.lo &= ~(1 << flag);
-}
-
-bool CPU::getFlag(FlagMask flag) {
-    return (AF.lo >> flag) & 1;
-}
-
 uint8_t CPU::fetch8(void) {
     uint8_t ret = console.mmu.read8(PC);
     PC += !haltBug;
@@ -653,19 +644,41 @@ bool CPU::checkInterrupts(void) {
 
     if (!pending) return false;
 
-    uint8_t vectors[5] = { 0x40, 0x48, 0x50, 0x58, 0x60 }; // VBLANK, STAT, timer, serial and joypad
-    for (int i = 0; i < 5; i++) {
-        if ((pending >> i) & 1) {
-            ime = false;
-
-            intFlag = intFlag & ~(1 << i);
-            
-            // service interrupt
-            push(PC);
-            PC = vectors[i];
-
-            return true; // interrupt serviced
-        }
+    // priority-ordered test (VBLANK highest)
+    if (pending & 0x01) {
+        ime = false;
+        intFlag &= ~0x01;
+        push(PC);
+        PC = 0x40;
+        return true;
+    }
+    if (pending & 0x02) {
+        ime = false;
+        intFlag &= ~0x02;
+        push(PC);
+        PC = 0x48;
+        return true;
+    }
+    if (pending & 0x04) {
+        ime = false;
+        intFlag &= ~0x04;
+        push(PC);
+        PC = 0x50;
+        return true;
+    }
+    if (pending & 0x08) {
+        ime = false;
+        intFlag &= ~0x08;
+        push(PC);
+        PC = 0x58;
+        return true;
+    }
+    if (pending & 0x10) {
+        ime = false;
+        intFlag &= ~0x10;
+        push(PC);
+        PC = 0x60;
+        return true;
     }
 
     return false;

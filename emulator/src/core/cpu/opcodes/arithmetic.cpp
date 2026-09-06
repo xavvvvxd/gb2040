@@ -232,10 +232,12 @@ uint8_t CPU::SBC_A_mHL(void) {
 uint8_t CPU::SBC_A_A(void) { return SBC_A_r8(AF.hi); }
 
 uint8_t CPU::CP_r8(uint8_t& reg) {
-    uint8_t before = AF.hi;
-
-    SUB_r8(reg);
-    AF.hi = before;
+    uint8_t a = AF.hi;
+    setFlag(HF, (a & 0x0F) < (reg & 0x0F));
+    setFlag(CF, a < reg);
+    uint8_t val = a - reg;
+    setFlag(ZF, val == 0);
+    setFlag(NF, true);
 
     return 1;
 }

@@ -17,10 +17,10 @@ void WaveChannel::tick(void) {
             return;
         }
 
-        waveformPtr = (waveformPtr + 1) % 32;
+        waveformPtr = (waveformPtr + 1) & 31;
 
-        uint8_t waveSample = waveform[waveformPtr / 2];
-        bool nibble = waveformPtr % 2;
+        uint8_t waveSample = waveform[waveformPtr >> 1];
+        bool nibble = waveformPtr & 1;
 
         if (nibble) waveSample >>= 4;
 

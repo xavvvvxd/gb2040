@@ -4,7 +4,6 @@
 
 #include <cstdint>
 #include <cstring>
-#include <algorithm>
 
 namespace GB2040::Core
 {
@@ -124,8 +123,9 @@ void PPU::renderScanline(void) {
             renderScanlineLayer(PPULayer::WINDOW);
         }
     } else {
+        uint16_t rowOffset = ly * GB_WIDTH;
         for (int x = 0; x < GB_WIDTH; x++) {
-            framebuffer->setPixel(x, ly, dmgLut[0]);
+            framebuffer->fb[rowOffset + x] = dmgLut[0];
             bgLineIndices[x] = 0;
         }
     }
@@ -139,24 +139,61 @@ void PPU::renderScanlineLayer(PPULayer layer) {
     if (layer == PPULayer::WINDOW && ly < wy) return;
 
     bool drewWindowPixel = false;
+    uint16_t rowOffset = ly * GB_WIDTH;
+
+    uint16_t mapBase = getMapBase(layer);
+
+    uint8_t bgY;
+    if (layer == PPULayer::WINDOW) {
+        bgY = wly;
+    } else {
+        bgY = scy + ly;
+    }
+    uint8_t tileY = bgY >> 3;
+    uint8_t pixelY = bgY & 7;
 
     for (int x = 0; x < GB_WIDTH; x++) {
         if (layer == PPULayer::WINDOW) {
             if (x + 7 < wx) continue;
-
-            // window is completely offscreen
             if (wx < 7 || wx > 166 || wy > 143) continue;
-
             drewWindowPixel = true;
         }
-        
-        renderScanlinePixel(layer, x);
+
+        uint8_t bgX;
+        if (layer == PPULayer::WINDOW) {
+            bgX = x - (wx - 7);
+        } else {
+            bgX = scx + x;
+        }
+
+        uint8_t tileX = bgX >> 3;
+        uint8_t pixelX = bgX & 7;
+
+        uint8_t tileId = vram[mapBase + tileY * 32 + tileX];
+
+        uint16_t tileAddr;
+        if (lcdc & 0x10) {
+            tileAddr = tileId * 16;
+        } else {
+            tileAddr = 0x1000 + (int8_t)tileId * 16;
+        }
+        tileAddr += pixelY * 2;
+
+        uint8_t low = vram[tileAddr];
+        uint8_t high = vram[tileAddr + 1];
+
+        uint8_t highBit = (high >> (7 - pixelX)) & 1;
+        uint8_t lowBit = (low >> (7 - pixelX)) & 1;
+        uint8_t colourIdx = (highBit << 1) | lowBit;
+
+        bgLineIndices[x] = colourIdx;
+        framebuffer->fb[rowOffset + x] = dmgLut[(bgp >> colourIdx * 2) & 0x03];
     }
 
     if (layer == PPULayer::WINDOW && drewWindowPixel) wly++;
 }
 
-void PPU::renderScanlinePixel(PPULayer layer, uint8_t x) {
+void PPU::renderScanlinePixel(PPULayer layer, uint8_t x, uint16_t rowOffset) {
     uint16_t mapBase = getMapBase(layer);
 
     uint8_t bgX, bgY;
@@ -198,7 +235,7 @@ void PPU::renderScanlinePixel(PPULayer layer, uint8_t x) {
 
     Colour finalColour = dmgLut[(bgp >> colourIdx * 2) & 0x03];
 
-    framebuffer->setPixel(x, ly, finalColour);
+    framebuffer->fb[rowOffset + x] = finalColour;
 }
 
 void PPU::renderScanlineObjects(void) {
@@ -218,6 +255,8 @@ void PPU::renderScanlineObjects(void) {
 
     sortSprites(lineSprites, spritesLoaded);
     
+    uint16_t rowOffset = ly * GB_WIDTH;
+
     for (int i = 0; i < spritesLoaded; i++) {
         Sprite& sprite = lineSprites[i];
         uint8_t tileIdx = sprite.tileIdx;
@@ -254,7 +293,7 @@ void PPU::renderScanlineObjects(void) {
                 Colour finalColour = dmgLut[(obp >> colourIdx * 2) & 0x03];
 
                 if (colourIdx) {
-                    framebuffer->setPixel(absX, ly, finalColour);
+                    framebuffer->fb[rowOffset + absX] = finalColour;
                     objectPixelsDrawn[absX] = true;
                 }
             }
@@ -263,10 +302,16 @@ void PPU::renderScanlineObjects(void) {
 }
 
 void PPU::sortSprites(Sprite* sprites, size_t count) {
-    std::sort(sprites, sprites + count, [](const Sprite& a, const Sprite& b) {
-        if (a.x == b.x) return a.oamIdx < b.oamIdx;
-        return a.x < b.x;
-    });
+    for (size_t i = 1; i < count; i++) {
+        Sprite key = sprites[i];
+        size_t j = i;
+        while (j > 0 && (sprites[j-1].x > key.x || 
+               (sprites[j-1].x == key.x && sprites[j-1].oamIdx > key.oamIdx))) {
+            sprites[j] = sprites[j-1];
+            j--;
+        }
+        sprites[j] = key;
+    }
 }
 
 uint16_t PPU::getMapBase(PPULayer layer) {

@@ -10,37 +10,23 @@ namespace GB2040::Core
 
 class APU;
 
-class IChannel {
+class PulseChannel {
 public:
-    virtual void tick(void) = 0;
-    virtual void lenTick(void) = 0;
-    virtual uint8_t readReg(uint8_t) = 0;
-    virtual void writeReg(uint8_t, uint8_t) = 0;
+    void tick(void);
+    void lenTick(void);
+    uint8_t readReg(uint8_t);
+    void writeReg(uint8_t, uint8_t);
 
-    virtual uint8_t out(void) = 0;
-
-    virtual void disable(void) = 0;
-private:
-    virtual void init(void) = 0;
-};
-
-class PulseChannel : public IChannel {
-public:
-    void tick(void) override;
-    void lenTick(void) override;
-    uint8_t readReg(uint8_t) override;
-    void writeReg(uint8_t, uint8_t) override;
-
-    uint8_t out(void) override;
+    uint8_t out(void);
 
     void sweepTick(void);
     void envTick(void);
 
-    void disable(void) override;
+    void disable(void);
 private:
     static constexpr std::array<uint8_t, 4> dutyPatterns {0b00000001, 0b10000001, 0b10000111, 0b01111110};
 
-    void init(void) override;
+    void init(void);
     uint16_t nextSweep(void);
     uint16_t getFreq(void);
 
@@ -74,18 +60,18 @@ private:
     bool enabled = false;
 };
 
-class WaveChannel : public IChannel {
+class WaveChannel {
 public:
-    void tick(void) override;
-    void lenTick(void) override;
-    uint8_t readReg(uint8_t) override;
-    void writeReg(uint8_t, uint8_t) override;
+    void tick(void);
+    void lenTick(void);
+    uint8_t readReg(uint8_t);
+    void writeReg(uint8_t, uint8_t);
 
-    uint8_t out(void) override;
+    uint8_t out(void);
 
-    void disable(void) override;
+    void disable(void);
 private:
-    void init(void) override;
+    void init(void);
 
     uint16_t getFreq(void);
 
@@ -108,22 +94,22 @@ private:
     bool enabled = false;
 };
 
-class NoiseChannel : public IChannel {
+class NoiseChannel {
 public:
-    void tick(void) override;
-    void lenTick(void) override;
-    uint8_t readReg(uint8_t) override;
-    void writeReg(uint8_t, uint8_t) override;
+    void tick(void);
+    void lenTick(void);
+    uint8_t readReg(uint8_t);
+    void writeReg(uint8_t, uint8_t);
 
-    uint8_t out(void) override;
+    uint8_t out(void);
     
     void envTick(void);
 
-    void disable(void) override;
+    void disable(void);
 private:
     static constexpr std::array<uint8_t, 8> divisors { 8, 16, 32, 48, 64, 80, 96, 112 };
 
-    void init(void) override;
+    void init(void);
 
     friend MMU;
 

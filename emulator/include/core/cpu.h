@@ -1,8 +1,7 @@
 #pragma once
 
 #include <cstdint>
-
-#include <fstream>
+#include <cstddef>
 
 namespace GB2040::Core
 {
@@ -66,8 +65,14 @@ private:
 
     bool checkInterrupts(void);
 
-    void setFlag(FlagMask, bool);
-    bool getFlag(FlagMask);
+    inline void setFlag(FlagMask flag, bool val) {
+        if (val) AF.lo |= 1 << flag;
+        else AF.lo &= ~(1 << flag);
+    }
+
+    inline bool getFlag(FlagMask flag) {
+        return (AF.lo >> flag) & 1;
+    }
 
     void initInstrTable(void);
     void initCbInstrTable(void);

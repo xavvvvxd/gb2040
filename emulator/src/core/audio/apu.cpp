@@ -3,7 +3,6 @@
 #include "core/console.h"
 
 #include <cstdint>
-#include <cmath>
 #include <cstring>
 #include <algorithm>
 
@@ -19,11 +18,20 @@ void APU::tick(size_t cycles) {
     if (!enabled) return;
 
     while (cycles > 0) {
-        cycles--;
-        divApuTimer--;
-        sampleTimer--;
+        uint32_t untilFsEvent = divApuTimer;
+        uint32_t batch = (cycles < untilFsEvent) ? static_cast<uint32_t>(cycles) : untilFsEvent;
 
-        if (divApuTimer <= 0) {
+        for (uint32_t i = 0; i < batch; i++) {
+            pulse1.tick();
+            pulse2.tick();
+            wave.tick();
+            noise.tick();
+        }
+
+        cycles -= batch;
+        divApuTimer -= batch;
+
+        if (divApuTimer == 0) {
             divApuTimer = 8192;
             switch (divApu) {
                 case 2:
@@ -46,17 +54,10 @@ void APU::tick(size_t cycles) {
             if (divApu >= 8) divApu = 0;
         }
 
-        pulse1.tick();
-        pulse2.tick();
-        wave.tick();
-        noise.tick();
-
-        if (sampleTimer <= 0.0f) {
+        sampleTimer -= batch;
+        while (sampleTimer <= 0.0f) {
             sampleTimer += SAMPLE_FREQ;
-            uint16_t l = 0, r = 0;
-
             StereoSample sample = mix(pulse1.out(), pulse2.out(), wave.out(), noise.out());
-            
             console.platform->pushSamples(&sample, 1);
         }
     }
@@ -72,7 +73,6 @@ void APU::setEnabled(bool enabled) {
         noise.disable();
 
         divApu = 0;
-        // Turning the APU off, however, does not affect [...] the DIV-APU counter.
         sampleTimer = SAMPLE_FREQ;
         lVolume = 7;
         rVolume = 7;
@@ -85,7 +85,7 @@ StereoSample APU::mix(uint8_t pulse1, uint8_t pulse2, uint8_t wave, uint8_t nois
 
     if (!enabled) return sample;
 
-    uint16_t lSum = 0.0f, rSum = 0.0f;
+    uint16_t lSum = 0, rSum = 0;
 
     if (pan & 0x01) lSum += pulse1;
     if (pan & 0x02) lSum += pulse2;
@@ -97,8 +97,8 @@ StereoSample APU::mix(uint8_t pulse1, uint8_t pulse2, uint8_t wave, uint8_t nois
     if (pan & 0x40) rSum += wave;
     if (pan & 0x80) rSum += noise;
 
-    sample.l = std::min(255, static_cast<int>(lSum * (lVolume / 7.0f)));
-    sample.r = std::min(255, static_cast<int>(rSum * (rVolume / 7.0f)));
+    sample.l = std::min<uint8_t>(255, static_cast<uint8_t>(lSum * lVolume / 7));
+    sample.r = std::min<uint8_t>(255, static_cast<uint8_t>(rSum * rVolume / 7));
 
     return sample;
 }

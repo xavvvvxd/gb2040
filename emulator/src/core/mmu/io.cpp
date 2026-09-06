@@ -76,7 +76,7 @@ uint8_t MMU::readIo(uint16_t port) {
         case 0x40:
             return console.ppu.lcdc;
         case 0x41:
-            return console.ppu.stat;
+            return console.ppu.readStat();
         case 0x42:
             return console.ppu.scy;
         case 0x43:

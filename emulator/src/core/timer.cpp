@@ -15,7 +15,7 @@ void Timer::incTimers(size_t cycles) {
     
     uint8_t old = tima;
 
-    uint16_t freqRates[4] = { 1024, 16, 64, 256 };
+    static const uint16_t freqRates[4] = { 1024, 16, 64, 256 };
     uint16_t freq = freqRates[tac & 0x03];
 
     timaCounter += cycles;

@@ -9,6 +9,7 @@
 #include <array>
 #include <filesystem>
 #include <stdio.h>
+#include <fstream>
 #include <SDL3/SDL.h>
 
 namespace GB2040::Platform
