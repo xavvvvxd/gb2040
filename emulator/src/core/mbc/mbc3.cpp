@@ -62,7 +62,10 @@ void MBC3::write8(uint16_t addr, uint8_t val) {
 
         return;
     } else if (0x6000 <= addr && addr <= 0x7FFF) {
-        if (!rtcLatchPrep && val == 0x01) {
+        bool hasRtc = (cartType == CartType::MBC3_TIMER_BATTERY ||
+                       cartType == CartType::MBC3_TIMER_RAM_BATTERY);
+
+        if (hasRtc && !rtcLatchPrep && val == 0x01) {
             tickRTC();
             rtcLatched = rtc;
             rtcLatchValid = true;

@@ -36,7 +36,7 @@ uint8_t MBC1::read8(uint16_t addr) {
         return v;
     } else if (0x4000 <= addr && addr <= 0x7FFF) { // switchable ROM
         uint32_t bank = romBank & 0x1F;
-        bank |= (mode == 1) ? ((ramBank & 0x03) << 5) : 0;
+        bank |= (mode == 0) ? ((ramBank & 0x03) << 5) : 0;
         if ((bank & 0x1F) == 0) bank = 1;
 
         uint32_t romAddr = bank * 0x4000 + (addr - 0x4000);
@@ -48,6 +48,7 @@ uint8_t MBC1::read8(uint16_t addr) {
 
         uint32_t bank = (mode == 1) ? ramBank & 0x03 : 0;
         uint32_t ramAddr = bank * 0x2000 + (addr - 0xA000);
+        if (ramAddr >= ramSize) return 0xFF;
         uint8_t v;
         ramSource->read8(ramAddr, &v, 1);
         return v;
@@ -75,6 +76,7 @@ void MBC1::write8(uint16_t addr, uint8_t val) {
 
         uint32_t bank = (mode == 1) ? ramBank & 0x03 : 0;
         uint32_t ramAddr = bank * 0x2000 + (addr - 0xA000);
+        if (ramAddr >= ramSize) return;
         ramSource->write8(ramAddr, &val, 1);
     }
 }
