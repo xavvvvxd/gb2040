@@ -5,6 +5,9 @@
 #include <cstdint>
 #include <cstring>
 
+#define SECONDS_PER_DAY 86400LL
+#define RTC_MAX_DAYS 512LL
+
 namespace GB2040::Core
 {
 
@@ -118,53 +121,28 @@ void MBC3::tickRTC(void) {
     uint64_t now = console.platform->getClock(); // us
     uint64_t elapsed = now - rtc.lastUpdateUs;
 
-    if (elapsed >= 1e6) {
-        uint64_t seconds = elapsed / 1e6;
-        rtc.lastUpdateUs += elapsed;
+    if (elapsed < 1e6) return;
 
-        for (uint64_t i = 0; i < seconds; i++) {
-            bool carryMinutes = false;
-            bool carryHours   = false;
-            bool carryDays    = false;
+    uint64_t seconds = elapsed / 1e6;
+    rtc.lastUpdateUs += elapsed;
 
-            if (rtc.seconds < 59) rtc.seconds++;
-            else if (rtc.seconds == 59) {
-                rtc.seconds = 0;
-                carryMinutes = true;
-            } else {
-                rtc.seconds = (rtc.seconds + 1) & 0x3F;
-            }
+    uint64_t currentSeconds = rtc.seconds + rtc.minutes * 60 + rtc.hours * 3600 + rtc.days * 86400 + seconds;
+    uint64_t totalSeconds = currentSeconds + seconds;
 
-            if (carryMinutes) {
-                if (rtc.minutes < 59) rtc.minutes++;
-                else if (rtc.minutes == 59) {
-                    rtc.minutes = 0;
-                    carryHours = true;
-                } else {
-                    rtc.minutes = (rtc.minutes + 1) & 0x3F;
-                }
-            }
-
-            if (carryHours) {
-                if (rtc.hours < 23) rtc.hours++;
-                else if (rtc.hours == 23) {
-                    rtc.hours = 0;
-                    carryDays = true;
-                } else {
-                    rtc.hours = (rtc.hours + 1) & 0x1F;
-                }
-            }
-
-            if (carryDays) {
-                rtc.days++;
-
-                if (rtc.days >= 512) {
-                    rtc.days = 0;
-                    rtc.carry = true;
-                }
-            }
-        }
+    if (totalSeconds >= RTC_MAX_DAYS * SECONDS_PER_DAY) {
+        rtc.carry = true;
     }
+
+    totalSeconds %= RTC_MAX_DAYS * SECONDS_PER_DAY;
+
+    rtc.days = totalSeconds / SECONDS_PER_DAY;
+    totalSeconds %= SECONDS_PER_DAY;
+
+    rtc.hours = totalSeconds / 3600;
+    totalSeconds %= 3600;
+
+    rtc.minutes = totalSeconds / 60;
+    rtc.seconds = totalSeconds % 60;
 }
 
 uint8_t MBC3::readRTC(uint8_t reg) {
