@@ -42,7 +42,7 @@ if(PICO_BUILD)
 
     pico_enable_stdio_usb(gb2040 1)
 
-    pico_set_binary_type(gb2040 no_flash)
+    # pico_set_binary_type(gb2040 no_flash)
 
     file(GLOB_RECURSE PIO_SOURCES "src/*.pio")
     pico_generate_pio_header(gb2040 ${PIO_SOURCES})

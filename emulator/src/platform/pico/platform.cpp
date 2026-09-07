@@ -17,8 +17,8 @@
 #include <string>
 
 // Workaround to https://github.com/raspberrypi/pico-sdk/issues/1368
-void* __dso_handle = 0;
-void* _fini = 0;
+// void* __dso_handle = 0;
+// void* _fini = 0;
 
 namespace GB2040::Platform
 {
@@ -49,15 +49,24 @@ public:
     PicoPlatform(void) : display(PIN_DISPLAY_SCK, PIN_DISPLAY_SDA, PIN_DISPLAY_CS, PIN_DISPLAY_DC, PIN_DISPLAY_RST, PIN_DISPLAY_BL) {  }
 
     void init(int argc, char** argv) override {
+        bool success;
         stdio_init_all();
         printf("Init");
 
-        set_sys_clock_khz(300000, true);
+        success = set_sys_clock_khz(300000, true);
 
-        clock_configure(clk_peri, 0,
+        if (!success) {
+            printf("Failed to set system clock\n");
+        }
+
+        success = clock_configure(clk_peri, 0,
                         CLOCKS_CLK_PERI_CTRL_AUXSRC_VALUE_CLK_SYS,
                         clock_get_hz(clk_sys),
                         clock_get_hz(clk_sys));
+        
+        if (!success) {
+            printf("Failed to configure peripheral clock\n");
+        }
 
         display.clear();
     }
