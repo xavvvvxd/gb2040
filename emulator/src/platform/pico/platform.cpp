@@ -96,7 +96,23 @@ public:
             printf("Failed to configure peripheral clock\n");
         }
 
+        // set up input
+        initButton(PIN_INPUT_UP);
+        initButton(PIN_INPUT_DOWN);
+        initButton(PIN_INPUT_LEFT);
+        initButton(PIN_INPUT_RIGHT);
+        initButton(PIN_INPUT_A);
+        initButton(PIN_INPUT_B);
+        initButton(PIN_INPUT_START);
+        initButton(PIN_INPUT_SELECT);
+
         display.clear();
+    }
+
+    void initButton(uint pin) {
+        gpio_init(pin);
+        gpio_set_dir(pin, GPIO_IN);
+        gpio_pull_up(pin);
     }
 
     void run(void) override {
@@ -125,6 +141,30 @@ public:
     }
 
     bool doEvents(GB2040::Core::Console& console) override {
+        if (gpio_get(PIN_INPUT_UP) == 0) console.pressButton(GB2040::Core::Button::UP);
+        else console.releaseButton(GB2040::Core::Button::UP);
+
+        if (gpio_get(PIN_INPUT_DOWN) == 0) { printf("DOWN pressed\n"); console.pressButton(GB2040::Core::Button::DOWN); }
+        else console.releaseButton(GB2040::Core::Button::DOWN);
+
+        if (gpio_get(PIN_INPUT_LEFT) == 0) console.pressButton(GB2040::Core::Button::LEFT);
+        else console.releaseButton(GB2040::Core::Button::LEFT);
+
+        if (gpio_get(PIN_INPUT_RIGHT) == 0) console.pressButton(GB2040::Core::Button::RIGHT);
+        else console.releaseButton(GB2040::Core::Button::RIGHT);
+
+        if (gpio_get(PIN_INPUT_A) == 0) console.pressButton(GB2040::Core::Button::A);
+        else console.releaseButton(GB2040::Core::Button::A);
+
+        if (gpio_get(PIN_INPUT_B) == 0) console.pressButton(GB2040::Core::Button::B);
+        else console.releaseButton(GB2040::Core::Button::B);
+
+        if (gpio_get(PIN_INPUT_START) == 0) console.pressButton(GB2040::Core::Button::START);
+        else console.releaseButton(GB2040::Core::Button::START);
+
+        if (gpio_get(PIN_INPUT_SELECT) == 0) console.pressButton(GB2040::Core::Button::SELECT);
+        else console.releaseButton(GB2040::Core::Button::SELECT);
+
         return true;
     }
 

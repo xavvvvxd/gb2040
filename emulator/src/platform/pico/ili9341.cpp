@@ -25,7 +25,7 @@ ILI9341::ILI9341(uint sck, uint sda, uint cs, uint dc, uint rst, uint bl) {
     gpio_set_function(sck, GPIO_FUNC_SPI);
     gpio_set_function(sda, GPIO_FUNC_SPI);
 
-    spi_init(SPI_PORT, 62'500'000); // 62.5 MHz
+    spi_init(SPI_PORT, 40'000'000); // 40 MHz
     spi_set_format(SPI_PORT, 8, SPI_CPOL_0, SPI_CPHA_0, SPI_MSB_FIRST);
 
     dmaChannel = dma_claim_unused_channel(true);
