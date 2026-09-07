@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.13)
+cmake_minimum_required(VERSION 3.20)
 
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_CXX_STANDARD 17)
@@ -110,6 +110,21 @@ if(PICO_BUILD)
     pico_add_extra_outputs(gb2040)
 else()
     # ========= desktop target =========
+    message(STATUS "Fetching SDL3...")
+
+    include(FetchContent)
+
+    FetchContent_Declare(
+        SDL3
+        GIT_REPOSITORY https://github.com/libsdl-org/SDL.git
+        GIT_TAG release-3.2.0
+        GIT_SHALLOW TRUE
+    )
+
+    set(SDL3_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+    set(SDL3_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
+
+    FetchContent_MakeAvailable(SDL3)
 
     # add desktop executable
     add_executable(gb2040
@@ -121,24 +136,23 @@ else()
     target_include_directories(gb2040
         PUBLIC 
             ${CMAKE_CURRENT_SOURCE_DIR}/include
-            ${CMAKE_CURRENT_SOURCE_DIR}/libs/SDL3/include
     )
 
     # pull in desktop deps
     target_link_libraries(gb2040
         PRIVATE
-            ${CMAKE_CURRENT_SOURCE_DIR}/libs/SDL3/lib/x64/SDL3.lib
+            SDL3::SDL3
     )
 
     target_link_options(gb2040 PRIVATE
-        -static
+        -static-libgcc
+        -static-libstdc++
     )
 
-    # copy SDL3.dll next to desktop executable
     add_custom_command(TARGET gb2040 POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        ${CMAKE_CURRENT_SOURCE_DIR}/libs/SDL3/lib/x64/SDL3.dll
-        $<TARGET_FILE_DIR:gb2040>
+            "$<TARGET_FILE:SDL3::SDL3>"
+            "$<TARGET_FILE_DIR:gb2040>"
     )
 
 endif()
