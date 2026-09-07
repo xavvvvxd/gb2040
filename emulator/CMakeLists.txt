@@ -9,6 +9,7 @@ if(NOT CMAKE_BUILD_TYPE)
 endif()
 
 option(PICO_BUILD "Build for RP2040/RP2350" OFF)
+set(TEST_ROM "" CACHE FILEPATH "Path to a test ROM to embed in the Pico build")
 
 file(GLOB_RECURSE CORE_SOURCES "src/core/*.cpp")
 
@@ -38,6 +39,22 @@ if(PICO_BUILD)
 
     pico_sdk_init()
 
+    if(TEST_ROM)
+        set(EMBEDDED_ROM_HEADER "${CMAKE_CURRENT_BINARY_DIR}/embedded_rom.h")
+        find_package(Python3 REQUIRED COMPONENTS Interpreter)
+        add_custom_command(
+            OUTPUT ${EMBEDDED_ROM_HEADER}
+            COMMAND ${Python3_EXECUTABLE}
+                ${CMAKE_CURRENT_SOURCE_DIR}/scripts/embed_rom.py
+                ${TEST_ROM}
+                ${EMBEDDED_ROM_HEADER}
+            DEPENDS ${TEST_ROM}
+            COMMENT "Embedding test ROM: ${TEST_ROM}"
+        )
+        add_custom_target(embedded_rom DEPENDS ${EMBEDDED_ROM_HEADER})
+        message(STATUS "Test ROM will be embedded: ${TEST_ROM}")
+    endif()
+
     add_executable(gb2040)
 
     pico_enable_stdio_usb(gb2040 1)
@@ -62,6 +79,12 @@ if(PICO_BUILD)
         ${SHARED_SOURCES}
         ${PLATFORM_SOURCES}
     )
+
+    if(TEST_ROM)
+        add_dependencies(gb2040 embedded_rom)
+        target_include_directories(gb2040 PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
+        target_compile_definitions(gb2040 PRIVATE HAS_EMBEDDED_ROM=1)
+    endif()
 
     # set up include dirs for pico target
     target_include_directories(gb2040

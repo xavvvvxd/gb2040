@@ -16,6 +16,10 @@
 #include <cstring>
 #include <string>
 
+#ifdef HAS_EMBEDDED_ROM
+#include "embedded_rom.h"
+#endif
+
 // Workaround to https://github.com/raspberrypi/pico-sdk/issues/1368
 // void* __dso_handle = 0;
 // void* _fini = 0;
@@ -27,6 +31,25 @@ ROMSource::~ROMSource(void) = default;
 
 Platform::~Platform(void) = default;
 
+#ifdef HAS_EMBEDDED_ROM
+class EmbeddedROM : public ROMSource {
+public:
+    EmbeddedROM(void) {  }
+
+    ~EmbeddedROM(void) = default;
+
+    void read8(uint32_t addr, uint8_t* buffer, size_t size) {
+        for (size_t i = 0; i < size; i++) {
+            uint32_t a = addr + i;
+            buffer[i] = (a < embedded_rom_size) ? embedded_rom[a] : 0xFF;
+        }
+    }
+
+    size_t size(void) {
+        return embedded_rom_size;
+    }
+};
+#else
 class NOPROM : public ROMSource {
 public:
     NOPROM(void) {  }
@@ -41,6 +64,7 @@ public:
         return 32768;
     }
 };
+#endif
 
 using namespace GB2040::Platform::Pico;
 
@@ -74,7 +98,11 @@ public:
     void run(void) override {
         using namespace GB2040::Core;
 
+#ifdef HAS_EMBEDDED_ROM
+        EmbeddedROM* romSource = new EmbeddedROM();
+#else
         NOPROM* romSource = new NOPROM();
+#endif
         Console* console = new Console(this, romSource);
 
         console->run();
@@ -107,11 +135,15 @@ public:
     }
 
     ROMSource* selectROM(void) override {
+#ifdef HAS_EMBEDDED_ROM
+        return new EmbeddedROM();
+#else
         return new NOPROM();
+#endif
     }
 
     RAMSource* getSave(size_t size) override {
-        
+        return nullptr;
     }
 
     void saveData(RAMSource* data) override {
