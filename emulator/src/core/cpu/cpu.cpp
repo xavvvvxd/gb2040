@@ -16,13 +16,18 @@ CPU::CPU(Console& console)
     initCbInstrTable();
 }
 
+void CPU::init(MMU& mmuRef, PPU& ppuRef) {
+    mmu = &mmuRef;
+    ppu = &ppuRef;
+}
+
 void CPU::push(uint16_t val) {
     SP -= 2;
-    console.mmu.write16(SP, val);
+    mmu->write16(SP, val);
 }
 
 uint16_t CPU::pop(void) {
-    uint16_t val = console.mmu.read16(SP);
+    uint16_t val = mmu->read16(SP);
     SP += 2;
 
     return val;
@@ -621,7 +626,7 @@ void CPU::initCbInstrTable(void) {
 }
 
 uint8_t CPU::fetch8(void) {
-    uint8_t ret = console.mmu.read8(PC);
+    uint8_t ret = mmu->read8(PC);
     PC += !haltBug;
     haltBug = false;
 
@@ -629,7 +634,7 @@ uint8_t CPU::fetch8(void) {
 }
 
 uint16_t CPU::fetch16(void) {
-    uint16_t ret = console.mmu.read16(PC);
+    uint16_t ret = mmu->read16(PC);
     PC += 2;
 
     return ret;
@@ -721,7 +726,7 @@ char* CPU::getDebug(void) {
 
     uint8_t pcMem[4];
     for (int i = 0; i < 4; i++) {
-        pcMem[i] = console.mmu.read8(PC + i);
+        pcMem[i] = mmu->read8(PC + i);
     }
 
     sprintf(output,

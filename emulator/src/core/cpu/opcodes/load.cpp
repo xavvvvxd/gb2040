@@ -26,7 +26,7 @@ uint8_t CPU::LD_SP_d16(void) {
 uint8_t CPU::LD_mr16_A(RegisterPair& reg, int8_t offset) {
     uint16_t addr = reg.get();
 
-    console.mmu.write8(addr, AF.hi);
+    mmu->write8(addr, AF.hi);
     reg.set(addr + offset);
 
     return 2;
@@ -50,13 +50,13 @@ uint8_t CPU::LD_H_d8(void) { return LD_r8_d8(HL.hi); }
 uint8_t CPU::LD_mHL_d8(void) { 
     uint8_t val;
     LD_r8_d8(val);
-    console.mmu.write8(HL.get(), val);
+    mmu->write8(HL.get(), val);
 
     return 3;
 }
 
 uint8_t CPU::LD_a16_SP(void) {
-    console.mmu.write16(fetch16(), SP);
+    mmu->write16(fetch16(), SP);
 
     return 5;
 }
@@ -64,7 +64,7 @@ uint8_t CPU::LD_a16_SP(void) {
 uint8_t CPU::LD_A_mr16(RegisterPair& reg, int8_t offset) {
     uint16_t addr = reg.get();
 
-    AF.hi = console.mmu.read8(addr);
+    AF.hi = mmu->read8(addr);
     reg.set(addr + offset);
 
     return 2;
@@ -87,13 +87,13 @@ uint8_t CPU::LD_r8_r8(uint8_t& reg1, uint8_t& reg2) {
 }
 
 uint8_t CPU::LD_r8_mHL(uint8_t& reg) {
-    reg = console.mmu.read8(HL.get());
+    reg = mmu->read8(HL.get());
 
     return 2;
 }
 
 uint8_t CPU::LD_mHL_r8(uint8_t& reg) {
-    console.mmu.write8(HL.get(), reg);
+    mmu->write8(HL.get(), reg);
 
     return 2;
 }
@@ -179,28 +179,28 @@ uint8_t CPU::LD_A_A(void) { return LD_r8_r8(AF.hi, AF.hi); }
 
 uint8_t CPU::LD_a8_A(void) {
     uint8_t addr = fetch8();
-    console.mmu.write8(addr + 0xFF00, AF.hi);
+    mmu->write8(addr + 0xFF00, AF.hi);
 
     return 3;
 }
 
 uint8_t CPU::LD_A_a8(void) {
     uint8_t addr = fetch8();
-    AF.hi = console.mmu.read8(addr + 0xFF00);
+    AF.hi = mmu->read8(addr + 0xFF00);
 
     return 3;
 }
 
 uint8_t CPU::LD_mC_A(void) {
     uint8_t addr = BC.lo;
-    console.mmu.write8(addr + 0xFF00, AF.hi);
+    mmu->write8(addr + 0xFF00, AF.hi);
     
     return 2;
 }
 
 uint8_t CPU::LD_A_mC(void) {
     uint8_t addr = BC.lo;
-    AF.hi = console.mmu.read8(addr + 0xFF00);
+    AF.hi = mmu->read8(addr + 0xFF00);
 
     return 2;
 }
@@ -229,14 +229,14 @@ uint8_t CPU::LD_SP_HL(void) {
 
 uint8_t CPU::LD_a16_A(void) {
     uint16_t addr = fetch16();
-    console.mmu.write8(addr, AF.hi);
+    mmu->write8(addr, AF.hi);
 
     return 4;
 }
 
 uint8_t CPU::LD_A_ma16(void) {
     uint16_t addr = fetch16();
-    AF.hi = console.mmu.read8(addr);
+    AF.hi = mmu->read8(addr);
 
     return 4;
 }

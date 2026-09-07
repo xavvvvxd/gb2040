@@ -27,9 +27,9 @@ uint8_t CPU::RLC_H(void) { return RLC(HL.hi); }
 uint8_t CPU::RLC_L(void) { return RLC(HL.lo); }
 
 uint8_t CPU::RLC_mHL(void) { 
-    uint8_t value = console.mmu.read8(HL.get());
+    uint8_t value = mmu->read8(HL.get());
     RLC(value);
-    console.mmu.write8(HL.get(), value);
+    mmu->write8(HL.get(), value);
 
     return 4;
 }
@@ -57,9 +57,9 @@ uint8_t CPU::RRC_H(void) { return RRC(HL.hi); }
 uint8_t CPU::RRC_L(void) { return RRC(HL.lo); }
 
 uint8_t CPU::RRC_mHL(void) { 
-    uint8_t value = console.mmu.read8(HL.get());
+    uint8_t value = mmu->read8(HL.get());
     RRC(value);
-    console.mmu.write8(HL.get(), value);
+    mmu->write8(HL.get(), value);
 
     return 4;
 }
@@ -87,9 +87,9 @@ uint8_t CPU::RL_H(void) { return RL(HL.hi); }
 uint8_t CPU::RL_L(void) { return RL(HL.lo); }
 
 uint8_t CPU::RL_mHL(void) { 
-    uint8_t value = console.mmu.read8(HL.get());
+    uint8_t value = mmu->read8(HL.get());
     RL(value);
-    console.mmu.write8(HL.get(), value);
+    mmu->write8(HL.get(), value);
 
     return 4;
 }
@@ -117,9 +117,9 @@ uint8_t CPU::RR_H(void) { return RR(HL.hi); }
 uint8_t CPU::RR_L(void) { return RR(HL.lo); }
 
 uint8_t CPU::RR_mHL(void) { 
-    uint8_t value = console.mmu.read8(HL.get());
+    uint8_t value = mmu->read8(HL.get());
     RR(value);
-    console.mmu.write8(HL.get(), value);
+    mmu->write8(HL.get(), value);
 
     return 4;
 }
@@ -147,9 +147,9 @@ uint8_t CPU::SLA_H(void) { return SLA(HL.hi); }
 uint8_t CPU::SLA_L(void) { return SLA(HL.lo); }
 
 uint8_t CPU::SLA_mHL(void) { 
-    uint8_t value = console.mmu.read8(HL.get());
+    uint8_t value = mmu->read8(HL.get());
     SLA(value);
-    console.mmu.write8(HL.get(), value);
+    mmu->write8(HL.get(), value);
 
     return 4;
 }
@@ -178,9 +178,9 @@ uint8_t CPU::SRA_H(void) { return SRA(HL.hi); }
 uint8_t CPU::SRA_L(void) { return SRA(HL.lo); }
 
 uint8_t CPU::SRA_mHL(void) { 
-    uint8_t value = console.mmu.read8(HL.get());
+    uint8_t value = mmu->read8(HL.get());
     SRA(value);
-    console.mmu.write8(HL.get(), value);
+    mmu->write8(HL.get(), value);
 
     return 4;
 }
@@ -207,9 +207,9 @@ uint8_t CPU::SWAP_H(void) { return SWAP(HL.hi); }
 uint8_t CPU::SWAP_L(void) { return SWAP(HL.lo); }
 
 uint8_t CPU::SWAP_mHL(void) { 
-    uint8_t value = console.mmu.read8(HL.get());
+    uint8_t value = mmu->read8(HL.get());
     SWAP(value);
-    console.mmu.write8(HL.get(), value);
+    mmu->write8(HL.get(), value);
 
     return 4;
 }
@@ -237,9 +237,9 @@ uint8_t CPU::SRL_H(void) { return SRL(HL.hi); }
 uint8_t CPU::SRL_L(void) { return SRL(HL.lo); }
 
 uint8_t CPU::SRL_mHL(void) { 
-    uint8_t value = console.mmu.read8(HL.get());
+    uint8_t value = mmu->read8(HL.get());
     SRL(value);
-    console.mmu.write8(HL.get(), value);
+    mmu->write8(HL.get(), value);
 
     return 4;
 }
@@ -265,7 +265,7 @@ uint8_t CPU::BIT_0_H(void) { return BIT(0, HL.hi); }
 uint8_t CPU::BIT_0_L(void) { return BIT(0, HL.lo); }
 
 uint8_t CPU::BIT_0_mHL(void) { 
-    uint8_t value = console.mmu.read8(HL.get());
+    uint8_t value = mmu->read8(HL.get());
     BIT(0, value);
 
     return 3;
@@ -281,7 +281,7 @@ uint8_t CPU::BIT_1_H(void) { return BIT(1, HL.hi); }
 uint8_t CPU::BIT_1_L(void) { return BIT(1, HL.lo); }
 
 uint8_t CPU::BIT_1_mHL(void) { 
-    uint8_t value = console.mmu.read8(HL.get());
+    uint8_t value = mmu->read8(HL.get());
     BIT(1, value);
 
     return 3;
@@ -297,7 +297,7 @@ uint8_t CPU::BIT_2_H(void) { return BIT(2, HL.hi); }
 uint8_t CPU::BIT_2_L(void) { return BIT(2, HL.lo); }
 
 uint8_t CPU::BIT_2_mHL(void) { 
-    uint8_t value = console.mmu.read8(HL.get());
+    uint8_t value = mmu->read8(HL.get());
     BIT(2, value);
 
     return 3;
@@ -313,7 +313,7 @@ uint8_t CPU::BIT_3_H(void) { return BIT(3, HL.hi); }
 uint8_t CPU::BIT_3_L(void) { return BIT(3, HL.lo); }
 
 uint8_t CPU::BIT_3_mHL(void) { 
-    uint8_t value = console.mmu.read8(HL.get());
+    uint8_t value = mmu->read8(HL.get());
     BIT(3, value);
 
     return 3;
@@ -329,7 +329,7 @@ uint8_t CPU::BIT_4_H(void) { return BIT(4, HL.hi); }
 uint8_t CPU::BIT_4_L(void) { return BIT(4, HL.lo); }
 
 uint8_t CPU::BIT_4_mHL(void) { 
-    uint8_t value = console.mmu.read8(HL.get());
+    uint8_t value = mmu->read8(HL.get());
     BIT(4, value);
 
     return 3;
@@ -345,7 +345,7 @@ uint8_t CPU::BIT_5_H(void) { return BIT(5, HL.hi); }
 uint8_t CPU::BIT_5_L(void) { return BIT(5, HL.lo); }
 
 uint8_t CPU::BIT_5_mHL(void) { 
-    uint8_t value = console.mmu.read8(HL.get());
+    uint8_t value = mmu->read8(HL.get());
     BIT(5, value);
 
     return 3;
@@ -361,7 +361,7 @@ uint8_t CPU::BIT_6_H(void) { return BIT(6, HL.hi); }
 uint8_t CPU::BIT_6_L(void) { return BIT(6, HL.lo); }
 
 uint8_t CPU::BIT_6_mHL(void) { 
-    uint8_t value = console.mmu.read8(HL.get());
+    uint8_t value = mmu->read8(HL.get());
     BIT(6, value);
 
     return 3;
@@ -377,7 +377,7 @@ uint8_t CPU::BIT_7_H(void) { return BIT(7, HL.hi); }
 uint8_t CPU::BIT_7_L(void) { return BIT(7, HL.lo); }
 
 uint8_t CPU::BIT_7_mHL(void) { 
-    uint8_t value = console.mmu.read8(HL.get());
+    uint8_t value = mmu->read8(HL.get());
     BIT(7, value);
 
     return 3;
@@ -399,9 +399,9 @@ uint8_t CPU::RES_0_H(void) { return RES(0, HL.hi); }
 uint8_t CPU::RES_0_L(void) { return RES(0, HL.lo); }
 
 uint8_t CPU::RES_0_mHL(void) { 
-    uint8_t value = console.mmu.read8(HL.get());
+    uint8_t value = mmu->read8(HL.get());
     RES(0, value);
-    console.mmu.write8(HL.get(), value);
+    mmu->write8(HL.get(), value);
 
     return 4;
 }
@@ -416,9 +416,9 @@ uint8_t CPU::RES_1_H(void) { return RES(1, HL.hi); }
 uint8_t CPU::RES_1_L(void) { return RES(1, HL.lo); }
 
 uint8_t CPU::RES_1_mHL(void) { 
-    uint8_t value = console.mmu.read8(HL.get());
+    uint8_t value = mmu->read8(HL.get());
     RES(1, value);
-    console.mmu.write8(HL.get(), value);
+    mmu->write8(HL.get(), value);
 
     return 4;
 }
@@ -433,9 +433,9 @@ uint8_t CPU::RES_2_H(void) { return RES(2, HL.hi); }
 uint8_t CPU::RES_2_L(void) { return RES(2, HL.lo); }
 
 uint8_t CPU::RES_2_mHL(void) { 
-    uint8_t value = console.mmu.read8(HL.get());
+    uint8_t value = mmu->read8(HL.get());
     RES(2, value);
-    console.mmu.write8(HL.get(), value);
+    mmu->write8(HL.get(), value);
 
     return 4;
 }
@@ -450,9 +450,9 @@ uint8_t CPU::RES_3_H(void) { return RES(3, HL.hi); }
 uint8_t CPU::RES_3_L(void) { return RES(3, HL.lo); }
 
 uint8_t CPU::RES_3_mHL(void) { 
-    uint8_t value = console.mmu.read8(HL.get());
+    uint8_t value = mmu->read8(HL.get());
     RES(3, value);
-    console.mmu.write8(HL.get(), value);
+    mmu->write8(HL.get(), value);
 
     return 4;
 }
@@ -467,9 +467,9 @@ uint8_t CPU::RES_4_H(void) { return RES(4, HL.hi); }
 uint8_t CPU::RES_4_L(void) { return RES(4, HL.lo); }
 
 uint8_t CPU::RES_4_mHL(void) { 
-    uint8_t value = console.mmu.read8(HL.get());
+    uint8_t value = mmu->read8(HL.get());
     RES(4, value);
-    console.mmu.write8(HL.get(), value);
+    mmu->write8(HL.get(), value);
 
     return 4;
 }
@@ -484,9 +484,9 @@ uint8_t CPU::RES_5_H(void) { return RES(5, HL.hi); }
 uint8_t CPU::RES_5_L(void) { return RES(5, HL.lo); }
 
 uint8_t CPU::RES_5_mHL(void) { 
-    uint8_t value = console.mmu.read8(HL.get());
+    uint8_t value = mmu->read8(HL.get());
     RES(5, value);
-    console.mmu.write8(HL.get(), value);
+    mmu->write8(HL.get(), value);
 
     return 4;
 }
@@ -501,9 +501,9 @@ uint8_t CPU::RES_6_H(void) { return RES(6, HL.hi); }
 uint8_t CPU::RES_6_L(void) { return RES(6, HL.lo); }
 
 uint8_t CPU::RES_6_mHL(void) { 
-    uint8_t value = console.mmu.read8(HL.get());
+    uint8_t value = mmu->read8(HL.get());
     RES(6, value);
-    console.mmu.write8(HL.get(), value);
+    mmu->write8(HL.get(), value);
 
     return 4;
 }
@@ -518,9 +518,9 @@ uint8_t CPU::RES_7_H(void) { return RES(7, HL.hi); }
 uint8_t CPU::RES_7_L(void) { return RES(7, HL.lo); }
 
 uint8_t CPU::RES_7_mHL(void) { 
-    uint8_t value = console.mmu.read8(HL.get());
+    uint8_t value = mmu->read8(HL.get());
     RES(7, value);
-    console.mmu.write8(HL.get(), value);
+    mmu->write8(HL.get(), value);
 
     return 4;
 }
@@ -541,9 +541,9 @@ uint8_t CPU::SET_0_H(void) { return SET(0, HL.hi); }
 uint8_t CPU::SET_0_L(void) { return SET(0, HL.lo); }
 
 uint8_t CPU::SET_0_mHL(void) { 
-    uint8_t value = console.mmu.read8(HL.get());
+    uint8_t value = mmu->read8(HL.get());
     SET(0, value);
-    console.mmu.write8(HL.get(), value);
+    mmu->write8(HL.get(), value);
 
     return 4;
 }
@@ -558,9 +558,9 @@ uint8_t CPU::SET_1_H(void) { return SET(1, HL.hi); }
 uint8_t CPU::SET_1_L(void) { return SET(1, HL.lo); }
 
 uint8_t CPU::SET_1_mHL(void) { 
-    uint8_t value = console.mmu.read8(HL.get());
+    uint8_t value = mmu->read8(HL.get());
     SET(1, value);
-    console.mmu.write8(HL.get(), value);
+    mmu->write8(HL.get(), value);
 
     return 4;
 }
@@ -575,9 +575,9 @@ uint8_t CPU::SET_2_H(void) { return SET(2, HL.hi); }
 uint8_t CPU::SET_2_L(void) { return SET(2, HL.lo); }
 
 uint8_t CPU::SET_2_mHL(void) { 
-    uint8_t value = console.mmu.read8(HL.get());
+    uint8_t value = mmu->read8(HL.get());
     SET(2, value);
-    console.mmu.write8(HL.get(), value);
+    mmu->write8(HL.get(), value);
 
     return 4;
 }
@@ -592,9 +592,9 @@ uint8_t CPU::SET_3_H(void) { return SET(3, HL.hi); }
 uint8_t CPU::SET_3_L(void) { return SET(3, HL.lo); }
 
 uint8_t CPU::SET_3_mHL(void) { 
-    uint8_t value = console.mmu.read8(HL.get());
+    uint8_t value = mmu->read8(HL.get());
     SET(3, value);
-    console.mmu.write8(HL.get(), value);
+    mmu->write8(HL.get(), value);
 
     return 4;
 }
@@ -609,9 +609,9 @@ uint8_t CPU::SET_4_H(void) { return SET(4, HL.hi); }
 uint8_t CPU::SET_4_L(void) { return SET(4, HL.lo); }
 
 uint8_t CPU::SET_4_mHL(void) { 
-    uint8_t value = console.mmu.read8(HL.get());
+    uint8_t value = mmu->read8(HL.get());
     SET(4, value);
-    console.mmu.write8(HL.get(), value);
+    mmu->write8(HL.get(), value);
 
     return 4;
 }
@@ -626,9 +626,9 @@ uint8_t CPU::SET_5_H(void) { return SET(5, HL.hi); }
 uint8_t CPU::SET_5_L(void) { return SET(5, HL.lo); }
 
 uint8_t CPU::SET_5_mHL(void) { 
-    uint8_t value = console.mmu.read8(HL.get());
+    uint8_t value = mmu->read8(HL.get());
     SET(5, value);
-    console.mmu.write8(HL.get(), value);
+    mmu->write8(HL.get(), value);
 
     return 4;
 }
@@ -643,9 +643,9 @@ uint8_t CPU::SET_6_H(void) { return SET(6, HL.hi); }
 uint8_t CPU::SET_6_L(void) { return SET(6, HL.lo); }
 
 uint8_t CPU::SET_6_mHL(void) { 
-    uint8_t value = console.mmu.read8(HL.get());
+    uint8_t value = mmu->read8(HL.get());
     SET(6, value);
-    console.mmu.write8(HL.get(), value);
+    mmu->write8(HL.get(), value);
 
     return 4;
 }
@@ -660,9 +660,9 @@ uint8_t CPU::SET_7_H(void) { return SET(7, HL.hi); }
 uint8_t CPU::SET_7_L(void) { return SET(7, HL.lo); }
 
 uint8_t CPU::SET_7_mHL(void) { 
-    uint8_t value = console.mmu.read8(HL.get());
+    uint8_t value = mmu->read8(HL.get());
     SET(7, value);
-    console.mmu.write8(HL.get(), value);
+    mmu->write8(HL.get(), value);
 
     return 4;
 }

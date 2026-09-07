@@ -7,6 +7,8 @@ namespace GB2040::Core
 {
 
 class Console; // forward declaration
+class MMU;
+class PPU;
 class CPU; // forward declaration for OpcodeImpl
 
 enum FlagMask : uint8_t {
@@ -35,6 +37,7 @@ struct RegisterPair {
 class CPU {
 public:
     CPU(Console& console);
+    void init(MMU& mmu, PPU& ppu);
     size_t tick(void);
     char* getDebug(void);
     void yieldCycles(size_t);
@@ -46,6 +49,8 @@ public:
 
 private:
     Console& console;
+    MMU* mmu = nullptr;
+    PPU* ppu = nullptr;
 
     bool halted = false;
     bool haltBug = false;

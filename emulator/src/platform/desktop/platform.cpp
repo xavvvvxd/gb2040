@@ -30,6 +30,10 @@ public:
     size_t size(void) {
         return rom.size();
     }
+
+    const uint8_t* data(void) override {
+        return rom.data();
+    }
 private:
     std::vector<uint8_t> rom;
 };

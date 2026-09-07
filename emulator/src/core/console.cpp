@@ -50,6 +50,9 @@ Console::Console(Platform* platform, ROMSource* romSource)
             mbc = new NoMBC(*this, romSource, header.cartType);
             break;
     }
+
+    mmu.setRomCache(romSource->data(), romSource->size());
+    cpu.init(mmu, ppu);
 }
 
 void Console::run(void) {

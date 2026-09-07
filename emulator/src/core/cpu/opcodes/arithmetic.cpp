@@ -52,10 +52,10 @@ uint8_t CPU::INC_B(void) { return INC_r8(BC.hi); }
 uint8_t CPU::INC_D(void) { return INC_r8(DE.hi); }
 uint8_t CPU::INC_H(void) { return INC_r8(HL.hi); }
 uint8_t CPU::INC_mHL(void) {
-    uint8_t val = console.mmu.read8(HL.get());
+    uint8_t val = mmu->read8(HL.get());
     INC_r8(val);
 
-    console.mmu.write8(HL.get(), val);
+    mmu->write8(HL.get(), val);
 
     return 3;
 }
@@ -76,10 +76,10 @@ uint8_t CPU::DEC_B(void) { return DEC_r8(BC.hi); }
 uint8_t CPU::DEC_D(void) { return DEC_r8(DE.hi); }
 uint8_t CPU::DEC_H(void) { return DEC_r8(HL.hi); }
 uint8_t CPU::DEC_mHL(void) {
-    uint8_t val = console.mmu.read8(HL.get());
+    uint8_t val = mmu->read8(HL.get());
     DEC_r8(val);
 
-    console.mmu.write8(HL.get(), val);
+    mmu->write8(HL.get(), val);
 
     return 3;
 }
@@ -142,7 +142,7 @@ uint8_t CPU::ADD_A_E(void) { return ADD_A_r8(DE.lo); }
 uint8_t CPU::ADD_A_H(void) { return ADD_A_r8(HL.hi); }
 uint8_t CPU::ADD_A_L(void) { return ADD_A_r8(HL.lo); }
 uint8_t CPU::ADD_A_mHL(void) {
-    uint8_t val = console.mmu.read8(HL.get());
+    uint8_t val = mmu->read8(HL.get());
     ADD_A_r8(val);
 
     return 2; 
@@ -171,7 +171,7 @@ uint8_t CPU::SUB_E(void) { return SUB_r8(DE.lo); }
 uint8_t CPU::SUB_H(void) { return SUB_r8(HL.hi); }
 uint8_t CPU::SUB_L(void) { return SUB_r8(HL.lo); }
 uint8_t CPU::SUB_mHL(void) {
-    uint8_t val = console.mmu.read8(HL.get());
+    uint8_t val = mmu->read8(HL.get());
     SUB_r8(val);
     return 2;
 }
@@ -198,7 +198,7 @@ uint8_t CPU::ADC_A_E(void) { return ADC_A_r8(DE.lo); }
 uint8_t CPU::ADC_A_H(void) { return ADC_A_r8(HL.hi); }
 uint8_t CPU::ADC_A_L(void) { return ADC_A_r8(HL.lo); }
 uint8_t CPU::ADC_A_mHL(void) {
-    uint8_t val = console.mmu.read8(HL.get());
+    uint8_t val = mmu->read8(HL.get());
     ADC_A_r8(val);
     return 2;
 }
@@ -225,7 +225,7 @@ uint8_t CPU::SBC_A_E(void) { return SBC_A_r8(DE.lo); }
 uint8_t CPU::SBC_A_H(void) { return SBC_A_r8(HL.hi); }
 uint8_t CPU::SBC_A_L(void) { return SBC_A_r8(HL.lo); }
 uint8_t CPU::SBC_A_mHL(void) {
-    uint8_t val = console.mmu.read8(HL.get());
+    uint8_t val = mmu->read8(HL.get());
     SBC_A_r8(val);
     return 2;
 }
@@ -249,7 +249,7 @@ uint8_t CPU::CP_E(void) { return CP_r8(DE.lo); }
 uint8_t CPU::CP_H(void) { return CP_r8(HL.hi); }
 uint8_t CPU::CP_L(void) { return CP_r8(HL.lo); }
 uint8_t CPU::CP_mHL(void) {
-    uint8_t val = console.mmu.read8(HL.get());
+    uint8_t val = mmu->read8(HL.get());
     CP_r8(val);
     return 2;
 }

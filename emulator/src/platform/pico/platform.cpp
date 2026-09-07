@@ -48,6 +48,10 @@ public:
     size_t size(void) {
         return embedded_rom_size;
     }
+
+    const uint8_t* data(void) override {
+        return embedded_rom;
+    }
 };
 #else
 class NOPROM : public ROMSource {

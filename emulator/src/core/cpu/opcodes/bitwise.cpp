@@ -65,7 +65,7 @@ uint8_t CPU::AND_E(void) { return AND_r8(DE.lo); }
 uint8_t CPU::AND_H(void) { return AND_r8(HL.hi); }
 uint8_t CPU::AND_L(void) { return AND_r8(HL.lo); }
 uint8_t CPU::AND_mHL() {
-    uint8_t val = console.mmu.read8(HL.get());
+    uint8_t val = mmu->read8(HL.get());
     AND_r8(val);
     return 2;
 }
@@ -90,7 +90,7 @@ uint8_t CPU::OR_E(void) { return OR_r8(DE.lo); }
 uint8_t CPU::OR_H(void) { return OR_r8(HL.hi); }
 uint8_t CPU::OR_L(void) { return OR_r8(HL.lo); }
 uint8_t CPU::OR_mHL(void) {
-    uint8_t val = console.mmu.read8(HL.get());
+    uint8_t val = mmu->read8(HL.get());
     OR_r8(val);
     return 2;
 }
@@ -115,7 +115,7 @@ uint8_t CPU::XOR_E(void) { return XOR_r8(DE.lo); }
 uint8_t CPU::XOR_H(void) { return XOR_r8(HL.hi); }
 uint8_t CPU::XOR_L(void) { return XOR_r8(HL.lo); }
 uint8_t CPU::XOR_mHL(void) {
-    uint8_t val = console.mmu.read8(HL.get());
+    uint8_t val = mmu->read8(HL.get());
     XOR_r8(val);
     return 2;
 }

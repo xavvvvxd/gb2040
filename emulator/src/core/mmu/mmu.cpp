@@ -24,6 +24,7 @@ uint8_t MMU::read8(uint16_t addr) {
         case 0x6: // 0x6000-0x6FFF
         case 0x7: // 0x7000-0x7FFF
             if (addr <= 0xFF && bootRomMapped) return console.bootRom[addr];
+            if (romData && addr < 0x4000 && addr < romSize) return romData[addr];
             return console.mbc->read8(addr);
         case 0x8: // 0x8000-0x8FFF
         case 0x9: // 0x9000-0x9FFF
