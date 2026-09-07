@@ -7,7 +7,7 @@
 #include <cstdint>
 #include <cmath>
 
-#define SAMPLE_RATE 44100.0f
+#define SAMPLE_RATE 48000.0f
 #define SAMPLE_FREQ 4194304.0f / SAMPLE_RATE
 
 namespace GB2040::Core {

@@ -95,7 +95,7 @@ public:
 
         // set up audio
         SDL_AudioSpec want {  };
-        want.freq = 44100;
+        want.freq = 48000;
         want.format = SDL_AUDIO_U8;
         want.channels = 2;
 
