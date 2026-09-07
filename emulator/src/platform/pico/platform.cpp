@@ -38,7 +38,7 @@ public:
 
     ~EmbeddedROM(void) = default;
 
-    void read8(uint32_t addr, uint8_t* buffer, size_t size) {
+    void read(uint32_t addr, uint8_t* buffer, size_t size) {
         for (size_t i = 0; i < size; i++) {
             uint32_t a = addr + i;
             buffer[i] = (a < embedded_rom_size) ? embedded_rom[a] : 0xFF;
@@ -60,7 +60,7 @@ public:
 
     ~NOPROM(void) = default;
 
-    void read8(uint32_t addr, uint8_t* buffer, size_t size) {
+    void read(uint32_t addr, uint8_t* buffer, size_t size) {
         memset(buffer, 0xFF, size);
     }
 

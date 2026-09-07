@@ -19,7 +19,7 @@ Console::Console(Platform* platform, ROMSource* romSource)
   apu(*this),
   mode(GBMode::DMG),
   input(0xFF) {
-    romSource->read8(0x104, reinterpret_cast<uint8_t*>(&header), sizeof(CartridgeHeader));
+    romSource->read(0x104, reinterpret_cast<uint8_t*>(&header), sizeof(CartridgeHeader));
 
     switch (header.cartType) {
         case CartType::MBC1:

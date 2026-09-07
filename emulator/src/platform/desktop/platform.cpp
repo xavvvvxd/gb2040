@@ -23,7 +23,7 @@ public:
 
     ~RAMROM(void) = default;
 
-    void read8(uint32_t addr, uint8_t* buffer, size_t size) {
+    void read(uint32_t addr, uint8_t* buffer, size_t size) {
         memcpy(buffer, rom.data() + addr, size);
     }
 
@@ -44,7 +44,7 @@ public:
 
     ~RAMRAM(void) = default;
 
-    void read8(uint32_t addr, uint8_t* buffer, size_t size) {
+    void read(uint32_t addr, uint8_t* buffer, size_t size) {
         memcpy(buffer, sram.data() + addr, size);
     }
 
@@ -282,7 +282,7 @@ public:
         file.seekp(0);
 
         std::vector<uint8_t> buffer(data->size());
-        data->read8(0, buffer.data(), data->size());
+        data->read(0, buffer.data(), data->size());
         file.write(reinterpret_cast<char*>(buffer.data()), buffer.size());
     }
 

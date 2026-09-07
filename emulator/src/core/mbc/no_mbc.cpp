@@ -20,7 +20,7 @@ uint8_t NoMBC::read8(uint16_t addr) {
     }
 
     uint8_t value;
-    romSource->read8(addr, &value, 1);
+    romSource->read(addr, &value, 1);
 
     return value;
 }

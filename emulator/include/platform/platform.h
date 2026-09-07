@@ -16,7 +16,7 @@ class ROMSource {
 public:
     virtual ~ROMSource(void);
 
-    virtual void read8(uint32_t, uint8_t*, size_t) = 0;
+    virtual void read(uint32_t, uint8_t*, size_t) = 0;
     virtual size_t size(void) = 0;
     virtual const uint8_t* data(void) { return nullptr; }
 };

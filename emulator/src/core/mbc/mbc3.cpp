@@ -26,12 +26,12 @@ MBC3::MBC3(Console& console, ROMSource* romSource, CartType cartType)
 uint8_t MBC3::read8(uint16_t addr) {
     if (0x0 <= addr && addr <= 0x3FFF) { // fixed ROM bank 0
         uint8_t v;
-        romSource->read8(addr, &v, 1);
+        romSource->read(addr, &v, 1);
         return v;
     } else if (0x4000 <= addr && addr <= 0x7FFF) { // switchable ROM
         uint32_t romAddr = romBank * 0x4000 + (addr - 0x4000);
         uint8_t v;
-        romSource->read8(romAddr, &v, 1);
+        romSource->read(romAddr, &v, 1);
         return v;
     } else if (0xA000 <= addr && addr <= 0xBFFF) {
         if (!ramEnabled) return 0xFF;
@@ -39,7 +39,7 @@ uint8_t MBC3::read8(uint16_t addr) {
 
         uint32_t ramAddr = ramBank * 0x2000 + (addr - 0xA000);
         uint8_t v;
-        ramSource->read8(ramAddr, &v, 1);
+        ramSource->read(ramAddr, &v, 1);
         return v;
     }
 
@@ -106,7 +106,7 @@ void MBC3::save(void) {
 
 RTC MBC3::parseRTC(void) {
     RTC parsed{};
-    ramSource->read8(ramSource->size() - sizeof(RTC), reinterpret_cast<uint8_t*>(&parsed), sizeof(RTC));
+    ramSource->read(ramSource->size() - sizeof(RTC), reinterpret_cast<uint8_t*>(&parsed), sizeof(RTC));
 
     if (parsed.lastUpdateUs == 0) {
         parsed.lastUpdateUs = console.platform->getClock();

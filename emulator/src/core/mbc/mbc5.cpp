@@ -32,19 +32,19 @@ MBC5::MBC5(Console& console, ROMSource* romSource, CartridgeHeader& cartHeader)
 uint8_t MBC5::read8(uint16_t addr) {
     if (0x0 <= addr && addr <= 0x3FFF) { // fixed ROM bank 0
         uint8_t v;
-        romSource->read8(addr, &v, 1);
+        romSource->read(addr, &v, 1);
         return v;
     } else if (0x4000 <= addr && addr <= 0x7FFF) { // switchable ROM
         uint32_t romAddr = romBank * 0x4000 + (addr - 0x4000);
         uint8_t v;
-        romSource->read8(romAddr, &v, 1);
+        romSource->read(romAddr, &v, 1);
         return v;
     } else if (0xA000 <= addr && addr <= 0xBFFF) {
         if (!ramEnabled) return 0xFF;
 
         uint32_t ramAddr = ramBank * 0x2000 + (addr - 0xA000);
         uint8_t v;
-        ramSource->read8(ramAddr, &v, 1);
+        ramSource->read(ramAddr, &v, 1);
         return v;
     }
 

@@ -18,19 +18,19 @@ MBC2::MBC2(Console& console, GB2040::Platform::ROMSource* romSource, CartType ca
 uint8_t MBC2::read8(uint16_t addr) {
     if (0x0 <= addr && addr <= 0x3FFF) {
         uint8_t v;
-        romSource->read8(addr, &v, 1);
+        romSource->read(addr, &v, 1);
         return v;
     } else if (0x4000 <= addr && addr <= 0x7FFF) {
         uint32_t romAddr = romBank * 0x4000 + (addr - 0x4000);
         uint8_t v;
-        romSource->read8(romAddr, &v, 1);
+        romSource->read(romAddr, &v, 1);
         return v;
     } else if (0xA000 <= addr && addr <= 0xBFFF && ramEnabled) {
         // return RAM instead
         addr = (addr - 0xA000) & 0x1FF; // echo
         
         uint8_t v;
-        ramSource->read8(addr / 2, &v, 1);
+        ramSource->read(addr / 2, &v, 1);
         return (v >> (addr % 2 * 4)) & 0x0F;
     } else return 0xFF;
 }
@@ -49,7 +49,7 @@ void MBC2::write8(uint16_t addr, uint8_t val) {
         uint8_t shift = addr % 2 == 0 ? 0 : 4;
 
         uint8_t v;
-        ramSource->read8(addr / 2, &v, 1);
+        ramSource->read(addr / 2, &v, 1);
 
         v &= ~(0x0F << shift);
         v |= (val & 0x0F) << shift;
